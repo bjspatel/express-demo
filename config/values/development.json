@@ -1,0 +1,5 @@
+{
+  "DB_URL": "mongodb://localhost:27017/test_dev",
+  "DEBUG": "app, app:error, app:init",
+  "PORT": 3000
+}
