@@ -1,0 +1,332 @@
+openapi: '3.0.9'
+info:
+  title: Test API
+  description: Maintains users system, and the users' test activities.
+  version: 0.1.1
+
+tags:
+  - description: User operations
+    name: users
+
+paths:
+  /users:
+    get:
+      summary: Gets Users List
+      description: Gets list of users
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: A keyword to search in `firstName` and `lastName` of the users
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['inactive', 'active', 'suspended', 'archieved']
+          description: Value of the status to look for.
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: The minimum date value for `createdAt`.
+        - name: toDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: The maximum date value for `createdAt`.
+        - name: skip
+          in: query
+          schema:
+            type: number
+            default: 0
+          description: Number of users to skip
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 10
+          description: Number of users to get in result
+      responses:
+        '200':
+          description: Success
+          content:
+            application-json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserListResponse'
+        '401':
+          description: Authentication Error
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/ErrorAuthResponse'
+    post:
+      summary: Creates User
+      description: Creates a new user
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application-json:
+            schema:
+              $ref: '#/components/schemas/UserPostRequest'
+      responses:
+        '201':
+          description: Success
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Authentication Error
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/ErrorAuthResponse'
+        '422':
+          description: Validation Error
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidationResponse'
+  /users/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Gets a User
+      description: Gets the user with given id
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Authentication Error
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/ErrorAuthResponse'
+        '404':
+          description: Not Found Error
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFoundResponse'
+    put:
+      summary: Edits User
+      description: Edits the user with given id
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application-json:
+            schema:
+              $ref: '#/components/schemas/UserPutRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Authentication Error
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/ErrorAuthResponse'
+        '404':
+          description: Not Found Error
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFoundResponse'
+        '422':
+          description: Validation Error
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/ErrorValidationResponse'
+    delete:
+      summary: Archieves a User
+      description: Archieves the user with given id
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Success
+        '401':
+          description: Authentication Error
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/ErrorAuthResponse'
+        '404':
+          description: Not Found Error
+          content:
+            application-json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFoundResponse'
+
+security:
+  - oAuth2AuthCode: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    UserListResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    Meta:
+      properties:
+        pagination:
+          type: object
+          properties:
+            skip:
+              type: number
+              description: Number of documents skipped
+              example: 30
+            limit:
+              type: number
+              description: Number of documents returned in response
+              example: 10
+            total:
+              type: number
+              description: Number of documents found
+              example: 65
+    User:
+      properties:
+        id:
+          type: string
+          description: Id of the user
+          example: '5b91eaca3dcf453886990673'
+        email:
+          type: string
+          format: email
+          description: Email of the user
+          example: 'ahana@email.com'
+        first_name:
+          type: boolean
+          description: First name of the user
+          example: 'Ahana'
+        last_name:
+          type: string
+          description: Last name of the user
+          example: 'Patel'
+        status:
+          type: string
+          enum: ['unverified', 'active', 'suspended', 'archieved']
+          description: Current status value of the user
+          example: 'active'
+        created_at:
+          type: string
+          format: date-time
+          description: Date when the user was created
+          example: '2018-01-05 20:59:56.595Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Date when user object was updated
+          example: '2018-02-05 20:59:56.595Z'
+        last_login_at:
+          type: string
+          format: date-time
+          description: Date when user last logged in
+          example: '2018-05-05 20:59:56.595Z'
+
+    UserPostRequest:
+      properties:
+        email:
+          $ref: '#/components/schemas/User/properties/email'
+        first_name:
+          $ref: '#/components/schemas/User/properties/first_name'
+        last_name:
+          $ref: '#/components/schemas/User/properties/last_name'
+        status:
+          $ref: '#/components/schemas/User/properties/status'
+
+    UserPutRequest:
+      properties:
+        first_name:
+          $ref: '#/components/schemas/User/properties/first_name'
+        last_name:
+          $ref: '#/components/schemas/User/properties/last_name'
+        status:
+          $ref: '#/components/schemas/User/properties/status'
+
+    ErrorAuthResponse:
+      properties:
+        error:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of error
+              example: 'AuthorizationError'
+            message:
+              type: string
+              description: Message describing auth failure
+              example: 'Unauthorized'
+    ErrorValidationResponse:
+      properties:
+        error:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of error
+              example: 'ValidationError'
+            message:
+              type: string
+              description: Message for validation error
+              example: 'A few fields failed to validate'
+            details:
+              type: array
+              items:
+                type: object
+    ErrorNotFoundResponse:
+      properties:
+        error:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of error
+              example: 'NotFoundError'
+            message:
+              type: string
+              description: Message for not found error
+              example: 'User not found'
