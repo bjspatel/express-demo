@@ -11,14 +11,14 @@ const testSchema = new Schema({
 
   subject: String,
 
-  maxScore: Number,
+  max_score: Number,
 
-  createdAt: {
+  created_at: {
     type: Date,
     default: Date.now
   },
 
-  updatedAt: {
+  updated_at: {
     type: Date,
     default: Date.now
   }

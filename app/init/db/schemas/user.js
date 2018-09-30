@@ -12,14 +12,14 @@ const userSchema = new Schema({
     unique: true
   },
 
-  password: {
+  password_hash: {
     type: String,
     required: true
   },
 
-  firstName: String,
+  first_name: String,
 
-  lastName: String,
+  last_name: String,
 
   status: {
     type: String,
@@ -27,17 +27,17 @@ const userSchema = new Schema({
     default: 'inactive'
   },
 
-  createdAt: {
+  created_at: {
     type: Date,
     default: Date.now
   },
 
-  updatedAt: {
+  updated_at: {
     type: Date,
     default: Date.now
   },
 
-  lastLoginAt: Date
+  last_login_at: Date
 });
 
 module.exports = userSchema;

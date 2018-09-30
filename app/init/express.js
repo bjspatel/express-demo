@@ -10,7 +10,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const yaml = require('yamljs');
-const { errorHandler } = require('./middlewares');
+const {
+  requestLogger,
+  authenticationHandler,
+  errorHandler
+} = require('./middlewares');
 const routes = require('../routes');
 
 const corsOptions = {
@@ -24,6 +28,9 @@ module.exports = () => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cors(corsOptions));
+
+  app.use(requestLogger);
+  app.use(authenticationHandler());
 
   if (process.env.NODE_ENV === 'development') {
     const swaggerDoc = yaml.load('./docs/api.yaml');

@@ -7,12 +7,12 @@
 const { Schema } = require('mongoose');
 
 const testAttemptSchema = new Schema({
-  userId: {
+  user_id: {
     type: String,
     required: true
   },
 
-  testId: {
+  test_id: {
     type: String,
     required: true
   },
@@ -23,12 +23,12 @@ const testAttemptSchema = new Schema({
     default: 'ready'
   },
 
-  createdAt: {
+  created_at: {
     type: Date,
     default: Date.now
   },
 
-  updatedAt: {
+  updated_at: {
     type: Date,
     default: Date.now
   }

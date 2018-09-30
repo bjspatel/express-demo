@@ -11,5 +11,5 @@ const testAttemptSchema = require('./test-attempt');
 module.exports = {
   user: userSchema,
   test: testSchema,
-  testAttempt: testAttemptSchema
+  test_attempt: testAttemptSchema
 };
